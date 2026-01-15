@@ -1,6 +1,7 @@
 {
   "name": "WhatTheStyle",
   "dependencies": {
+    "lucide-vue-next": "^0.562.0",
     "nuxt": "^4.2.2",
     "vue": "^3.5.26",
     "vue-router": "^4.6.4"
@@ -16,6 +17,7 @@
   "type": "module",
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.0.8",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18"

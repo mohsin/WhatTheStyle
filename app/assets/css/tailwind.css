@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+@theme {
+    --color-midnight: #0F172A;
+    --color-electric: #8B5CF6;
+    --color-cyber: #3B82F6;
+    --color-surface: rgba(30, 41, 59, 0.7);
+
+    --font-sans: "Inter", sans-serif;
+    --font-display: "Outfit", sans-serif;
+}
+
+/* Global Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.2);
+    /* Electric transparent */
+    border-radius: 99px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #8B5CF6;
+    /* Full Electric */
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
+    /* Glow */
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Ensure no outer scrollbar on body */
+:root,
+body,
+#__nuxt {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    /* Prevent double scrollbar */
+}
