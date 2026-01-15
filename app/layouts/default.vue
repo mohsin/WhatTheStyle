@@ -22,7 +22,7 @@
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 w-full space-y-4 px-2 lg:px-6">
+      <nav class="flex-1 w-full space-y-4 px-2 lg:px-6 overflow-y-auto custom-scrollbar">
         <NuxtLink to="/" class="group flex flex-col lg:flex-row items-center lg:gap-4 p-3 lg:p-4 rounded-xl transition-all duration-300 hover:bg-white/5 relative overflow-hidden" active-class="bg-white/5 border-r-2 lg:border-r-0 lg:border-l-2 border-electric shadow-[0_0_15px_rgba(139,92,246,0.1)]">
             <div class="absolute inset-0 bg-gradient-to-r from-electric/10 to-transparent opacity-0 group-[.router-link-active]:opacity-100 transition-opacity duration-500"></div>
             <Shirt class="w-6 h-6 text-gray-400 group-hover:text-electric group-[.router-link-active]:text-electric transition-colors relative z-10" />

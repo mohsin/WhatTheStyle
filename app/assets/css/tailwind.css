@@ -12,8 +12,8 @@
 
 /* Global Scrollbar Styling */
 ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -21,22 +21,33 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(139, 92, 246, 0.2);
-    /* Electric transparent */
+    background: rgba(139, 92, 246, 0.15);
+    /* Subtle Electric */
     border-radius: 99px;
     backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    /* Tiny border for definition */
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: #8B5CF6;
     /* Full Electric */
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.8);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.6);
     /* Glow */
 }
 
 ::-webkit-scrollbar-corner {
     background: transparent;
+}
+
+/* Maintain utility class just in case specific overrides are needed, but map to same style logic if different */
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 /* Ensure no outer scrollbar on body */
@@ -47,4 +58,20 @@ body,
     margin: 0;
     overflow: hidden;
     /* Prevent double scrollbar */
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
 }
