@@ -1,7 +1,9 @@
 <template>
   <div class="h-full flex flex-col lg:flex-row w-full overflow-hidden">
     <!-- Main Stage (Center) -->
-    <div class="flex-1 flex flex-col p-8 lg:p-12 relative overflow-y-auto custom-scrollbar">
+    <div class="flex-1 flex flex-col relative overflow-hidden">
+      <!-- Scrollable Content Wrapper -->
+      <div class="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar">
       <header class="mb-10 flex items-end justify-between">
         <div>
           <h1 class="text-4xl font-display font-bold text-white mb-2 tracking-wide">AI Stylist</h1>
@@ -15,12 +17,12 @@
         <!-- The Dynamic Floating Slab -->
         <!-- The Dynamic 3D Stage -->
         <div
-          class="relative w-full max-w-md perspective-[2000px] group"
+          class="relative w-full max-w-md perspective-[2000px] group -translate-y-[10%]"
         >
 
              <!-- 3D Glass Floor Slab (with Thickness) -->
              <div
-                class="absolute bottom-32 left-1/2 -translate-x-1/2 w-[90%] h-28 rounded-[2rem] transform rotate-x-60 origin-bottom transition-all duration-700 hover:rotate-x-50 hover:scale-100 group"
+                class="absolute bottom-26 left-1/2 -translate-x-1/2 w-[90%] h-28 rounded-[2rem] transform rotate-x-60 origin-bottom transition-all duration-700 hover:rotate-x-50 hover:scale-100 group"
                 style="transform-style: preserve-3d;"
              >
              >
@@ -43,20 +45,22 @@
 
                 <!-- Generated Result (Image Mode) -->
                 <!-- Layered Stack: Jacket Front, Jeans Back (Corrected) -->
+                <!-- Composed Items Mode (Default) -->
+                <!-- Layered Stack: Jacket Front, Jeans Back (Corrected) -->
                 <div class="relative w-full h-[500px]">
                      <!-- Jeans (Back Layer - Behind Jacket) -->
-                     <div class="absolute top-12 left-[40%] -translate-x-[15%] w-[72%] z-10 rotate-[10deg] transition-transform duration-500 hover:rotate-[12deg] hover:scale-105 group">
-                        <img src="/jeans.png" class="w-full h-auto object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.5)]" alt="Cyber Jeans" />
+                     <div class="absolute top-20 left-[40%] -translate-x-[15%] w-[72%] z-10 rotate-[10deg] transition-transform duration-500 hover:rotate-[12deg] hover:scale-105 group">
+                        <img :src="currentOutfit.bottom.image" class="w-full h-full object-contain drop-shadow-[0_25px_40px_rgba(0,0,0,0.5)]" :alt="currentOutfit.bottom.name" />
                      </div>
 
                      <!-- Jacket (Front Layer - Main Focus) -->
-                     <div class="absolute top-0 left-[40%] -translate-x-[60%] w-[65%] z-30 rotate-[-10deg] transition-transform duration-500 hover:rotate-[-12deg] hover:scale-105 group">
-                        <img src="/jacket.png" class="w-full h-auto object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.7)]" alt="Cyber Jacket" />
+                     <div class="absolute top-8 left-[40%] -translate-x-[60%] w-[65%] z-30 rotate-[-10deg] transition-transform duration-500 hover:rotate-[-12deg] hover:scale-105 group">
+                        <img :src="currentOutfit.top.image" class="w-full h-full object-contain drop-shadow-[0_30px_60px_rgba(0,0,0,0.7)]" :alt="currentOutfit.top.name" />
                     </div>
 
                     <!-- Shoes (Anchor Layer - Sitting on Raised Slab) -->
-                    <div class="absolute bottom-16 left-[40%] -translate-x-1/2 w-[40%] z-40 rotate-[-5deg] transition-transform duration-500 hover:rotate-0 hover:scale-105 group">
-                        <img src="/shoes.png" class="w-full h-auto object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]" alt="Cyber Shoes" />
+                    <div class="absolute bottom-10 left-[40%] -translate-x-1/2 w-[40%] z-40 rotate-[-5deg] transition-transform duration-500 hover:rotate-0 hover:scale-105 group">
+                        <img :src="currentOutfit.shoes.image" class="w-full h-full object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]" :alt="currentOutfit.shoes.name" />
                     </div>
                 </div>
 
@@ -64,19 +68,43 @@
         </div>
       </div>
 
+      </div>
+
       <!-- Prompt Input (Floating Bottom) -->
-      <div class="mt-8 relative max-w-3xl mx-auto w-full group/input">
-        <div class="absolute -inset-1 bg-gradient-to-r from-electric via-purple-500 to-cyber rounded-3xl blur opacity-30 group-hover/input:opacity-60 transition-opacity duration-500"></div>
-        <div class="relative bg-midnight/80 backdrop-blur-xl border border-white/10 rounded-3xl p-2 flex items-center gap-4 shadow-2xl">
-          <input
-            type="text"
-            placeholder="I need an outfit for a DJ party tonight..."
-            class="flex-1 bg-transparent border-none focus:ring-0 text-white text-lg placeholder-gray-500 px-6 py-4 font-medium tracking-wide outline-none min-w-0"
-          />
-          <button class="bg-gradient-to-r from-electric to-cyber text-white font-bold py-4 px-10 rounded-2xl shadow-lg hover:shadow-electric/40 hover:scale-105 active:scale-95 transition-all duration-300 flex-shrink-0 flex items-center gap-2">
-            <Sparkles class="w-5 h-5" />
-            <span>Generate</span>
-          </button>
+      <div class="absolute bottom-20 left-0 right-0 z-50 px-8 flex justify-center pointer-events-none">
+        <div class="relative max-w-[38rem] w-full group/input pointer-events-auto">
+            <div class="absolute -inset-1 bg-gradient-to-r from-electric via-purple-500 to-cyber rounded-3xl blur opacity-30 group-hover/input:opacity-60 transition-opacity duration-500"></div>
+            <div class="relative bg-midnight/80 backdrop-blur-xl border border-white/10 rounded-3xl p-2 flex items-center gap-4 shadow-2xl">
+
+              <!-- Upload Button with Tooltip -->
+              <div class="relative group/upload">
+                 <input type="file" ref="fileInput" class="hidden" @change="handleUpload" accept="image/*" />
+                 <button @click="triggerUpload" :disabled="isUploading" class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 hover:border-white/30 transition-all disabled:opacity-50 disabled:cursor-wait">
+                    <Upload v-if="!isUploading" class="w-6 h-6 text-gray-400 group-hover/upload:text-white transition-colors" />
+                    <div v-else class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                 </button>
+                 <!-- Tooltip -->
+                 <div class="absolute bottom-full mb-3 left-1/2 -translate-x-1/2 w-64 bg-black/90 backdrop-blur-md border border-white/10 p-3 rounded-xl text-xs text-gray-300 text-center shadow-xl opacity-0 scale-95 group-hover/upload:opacity-100 group-hover/upload:scale-100 transition-all pointer-events-none z-50">
+                    Drop your photo to get a render of yourself with the selection
+                    <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-black/90 rotate-45 border-b border-r border-white/10"></div>
+                 </div>
+              </div>
+
+              <input
+                v-model="userInput"
+                type="text"
+                placeholder="for a DJ party"
+                class="flex-1 bg-transparent border-none focus:ring-0 text-white text-lg placeholder-gray-500 px-4 py-4 font-medium tracking-wide outline-none min-w-0"
+              />
+              <button
+                :disabled="!userInput || isGenerating"
+                class="bg-gradient-to-r from-electric to-cyber text-white font-bold py-4 px-10 rounded-2xl shadow-lg hover:shadow-electric/40 hover:scale-105 active:scale-95 transition-all duration-300 flex-shrink-0 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Sparkles v-if="!isGenerating" class="w-5 h-5" />
+                <div v-else class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <span>{{ isGenerating ? 'Ruling...' : 'Pick' }}</span>
+              </button>
+            </div>
         </div>
       </div>
     </div>
@@ -123,7 +151,62 @@
 </template>
 
 <script setup lang="ts">
-import { Sparkles, Shirt, Plus } from 'lucide-vue-next';
+import { Sparkles, Shirt, Plus, Upload } from 'lucide-vue-next';
+
+// State
+const userInput = ref('');
+const isGenerating = ref(false);
+const isUploading = ref(false);
+const fileInput = ref<HTMLInputElement | null>(null);
+
+const currentOutfit = reactive({
+    top: { name: 'Cyber Jacket', image: '/jacket.png' },
+    bottom: { name: 'Cyber Jeans', image: '/jeans.png' },
+    shoes: { name: 'Cyber Shoes', image: '/shoes.png' }
+});
+
+// Actions
+interface GenerateResponse {
+    success: boolean;
+    outfit: Array<{ name: string; image: string; category: string; }>;
+}
+
+const triggerUpload = () => {
+    fileInput.value?.click();
+};
+
+const handleUpload = async (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+        const file = target.files[0];
+        if (file) await uploadImage(file);
+    }
+};
+
+const uploadImage = async (file: File) => {
+    isUploading.value = true;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await $fetch<{ success: boolean; url: string }>('/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.success) {
+            // Logic to handle successful upload (e.g., set as current "user" image or classify)
+            console.log('Uploaded image:', response.url);
+            // Ideally call classification service here
+        }
+    } catch (error) {
+        console.error('Upload failed', error);
+    } finally {
+        isUploading.value = false;
+        // Reset input
+        if (fileInput.value) fileInput.value.value = '';
+    }
+};
 
 // Wardrobe Data (Mocked with Active Items)
 const wardrobeCategories = {
