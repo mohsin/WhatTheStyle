@@ -92,11 +92,13 @@
 
               <input
                 v-model="userInput"
+                @keyup.enter="generateOutfit"
                 type="text"
                 placeholder="for a DJ party"
                 class="flex-1 bg-transparent border-none focus:ring-0 text-white text-lg placeholder-gray-500 px-4 py-4 font-medium tracking-wide outline-none min-w-0"
               />
               <button
+                @click="generateOutfit"
                 :disabled="!userInput || isGenerating"
                 class="bg-gradient-to-r from-electric to-cyber text-white font-bold py-4 px-10 rounded-2xl shadow-lg hover:shadow-electric/40 hover:scale-105 active:scale-95 transition-all duration-300 flex-shrink-0 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -205,6 +207,37 @@ const uploadImage = async (file: File) => {
         isUploading.value = false;
         // Reset input
         if (fileInput.value) fileInput.value.value = '';
+    }
+};
+
+const generateOutfit = async () => {
+    if (!userInput.value) return;
+
+    isGenerating.value = true;
+    try {
+        const response = await $fetch<GenerateResponse>('/api/generate', {
+            method: 'POST',
+            body: { prompt: userInput.value }
+        });
+        const { outfit } = response;
+
+        if (outfit && outfit.length >= 3) {
+            // Check for categories to assign correctly, or assume order [Top, Bottom, Shoes] from graph
+            // The graph ensures: [Top, Bottom, Shoes]
+            currentOutfit.top = outfit[0]!;
+            currentOutfit.bottom = outfit[1]!;
+            currentOutfit.shoes = outfit[2]!;
+
+            // Update wardrobe selection (simple toggle for visual consistency)
+             wardrobeCategories.Tops.forEach(i => i.selected = (i.name === currentOutfit.top.name));
+            wardrobeCategories.Bottoms.forEach(i => i.selected = (i.name === currentOutfit.bottom.name));
+            wardrobeCategories.Shoes.forEach(i => i.selected = (i.name === currentOutfit.shoes.name));
+        }
+
+    } catch (error) {
+        console.error("Generation failed", error);
+    } finally {
+        isGenerating.value = false;
     }
 };
 
